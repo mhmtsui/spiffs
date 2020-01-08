@@ -37,29 +37,6 @@ typedef unsigned short u16_t;
 typedef signed char s8_t;
 typedef unsigned char u8_t;
 
-
-// #if defined(__cplusplus)
-// extern "C" {
-// #endif
-
-// void spiffsParticleInfoLog(const char *fmt, ...);
-// void spiffsParticleTraceLog(const char *fmt, ...);
-//void log_e(const char * fmt, ...);
-// void spiffsParticleLock();
-// void spiffsParticleUnlock();
-
-// #if defined(__cplusplus)
-// };
-// #endif
-// void logg(const char * fmt, ...){
-//     char buffer[256];
-//     va_list args;
-//     va_start(args, fmt);
-//     vsprintf(buffer, fmt, args);
-//     va_end(args);
-//     Serial.print(buffer);
-// }
-
 #ifndef SEEK_SET
 #define	SEEK_SET	0	/* set file offset to offset */
 #endif
@@ -117,23 +94,23 @@ typedef unsigned char u8_t;
 
 // Set generic spiffs debug output call.
 #ifndef SPIFFS_DBG
-#define SPIFFS_DBG(_f, ...) printf(_f, ## __VA_ARGS__) 
+#define SPIFFS_DBG(_f, ...) //printf(_f, ## __VA_ARGS__) 
 #endif
 // Set spiffs debug output call for garbage collecting.
 #ifndef SPIFFS_GC_DBG
-#define SPIFFS_GC_DBG(_f, ...) printf(_f, ## __VA_ARGS__) 
+#define SPIFFS_GC_DBG(_f, ...) //printf(_f, ## __VA_ARGS__) 
 #endif
 // Set spiffs debug output call for caching.
 #ifndef SPIFFS_CACHE_DBG
-#define SPIFFS_CACHE_DBG(_f, ...) printf(_f, ## __VA_ARGS__) 
+#define SPIFFS_CACHE_DBG(_f, ...) //printf(_f, ## __VA_ARGS__) 
 #endif
 // Set spiffs debug output call for system consistency checks.
 #ifndef SPIFFS_CHECK_DBG
-#define SPIFFS_CHECK_DBG(_f, ...) printf(_f, ## __VA_ARGS__) 
+#define SPIFFS_CHECK_DBG(_f, ...) //printf(_f, ## __VA_ARGS__) 
 #endif
 // Set spiffs debug output call for all api invocations.
 #ifndef SPIFFS_API_DBG
-#define SPIFFS_API_DBG(_f, ...) printf(_f, ## __VA_ARGS__) 
+#define SPIFFS_API_DBG(_f, ...) //printf(_f, ## __VA_ARGS__) 
 #endif
 
 
