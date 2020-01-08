@@ -7,9 +7,6 @@
 
 #ifndef SPIFFS_H_
 #define SPIFFS_H_
-#if defined(__cplusplus)
-extern "C" {
-#endif
 
 #include "spiffs_config.h"
 
@@ -808,9 +805,6 @@ u32_t SPIFFS_buffer_bytes_for_cache(spiffs *fs, u32_t num_pages);
 #endif
 
 #if SPIFFS_CACHE
-#endif
-#if defined(__cplusplus)
-}
 #endif
 
 #endif /* SPIFFS_H_ */

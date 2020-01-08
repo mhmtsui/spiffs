@@ -12,12 +12,16 @@
 // Following includes are for the linux test build of spiffs
 // These may/should/must be removed/altered/replaced in your target
 
-//#include "params_test.h"
-#include <stdio.h>
-#include <stdlib.h>
+#include <LibPrintf.h>
+//#include <HardwareSerial.h>
 #include <string.h>
+//#include <stddef.h>
+#include <stdint.h>
+#include <stdarg.h>
+#include <stdio.h>
 #include <stddef.h>
-#include <unistd.h>
+//#include "params_test.h"
+//#include "log.h"
 
 #ifdef _SPIFFS_TEST
 #include "testrunner.h"
@@ -25,49 +29,51 @@
 
 // ----------- >8 ------------
 
-typedef int8_t s8_t;
-typedef uint8_t u8_t;
-typedef int16_t s16_t;
-typedef uint16_t u16_t;
-typedef int32_t s32_t;
-typedef uint32_t u32_t;
+typedef signed short file_t;
+typedef signed long s32_t;
+typedef unsigned long u32_t;
+typedef signed short s16_t;
+typedef unsigned short u16_t;
+typedef signed char s8_t;
+typedef unsigned char u8_t;
 
 
-#if defined(__cplusplus)
-extern "C" {
+// #if defined(__cplusplus)
+// extern "C" {
+// #endif
+
+// void spiffsParticleInfoLog(const char *fmt, ...);
+// void spiffsParticleTraceLog(const char *fmt, ...);
+//void log_e(const char * fmt, ...);
+// void spiffsParticleLock();
+// void spiffsParticleUnlock();
+
+// #if defined(__cplusplus)
+// };
+// #endif
+// void logg(const char * fmt, ...){
+//     char buffer[256];
+//     va_list args;
+//     va_start(args, fmt);
+//     vsprintf(buffer, fmt, args);
+//     va_end(args);
+//     Serial.print(buffer);
+// }
+
+#ifndef SEEK_SET
+#define	SEEK_SET	0	/* set file offset to offset */
 #endif
 
-void spiffsParticleInfoLog(const char *fmt, ...);
-void spiffsParticleTraceLog(const char *fmt, ...);
-
-void spiffsParticleLock();
-void spiffsParticleUnlock();
-
-#if defined(__cplusplus)
-};
+#ifndef SEEK_CUR
+#define	SEEK_CUR	1	/* set file offset to current plus offset */
 #endif
 
-// compile time switches
+#ifndef SEEK_END
+#define	SEEK_END	2	/* set file offset to EOF plus offset */
+#endif
 
-// Set generic spiffs debug output call.
-#ifndef SPIFFS_DBG
-#define SPIFFS_DBG(_f, ...) spiffsParticleInfoLog(_f, ## __VA_ARGS__)
-#endif
-// Set spiffs debug output call for garbage collecting.
-#ifndef SPIFFS_GC_DBG
-#define SPIFFS_GC_DBG(_f, ...) spiffsParticleTraceLog(_f, ## __VA_ARGS__)
-#endif
-// Set spiffs debug output call for caching.
-#ifndef SPIFFS_CACHE_DBG
-#define SPIFFS_CACHE_DBG(_f, ...) // spiffsParticleTraceLog(_f, ## __VA_ARGS__)
-#endif
-// Set spiffs debug output call for system consistency checks.
-#ifndef SPIFFS_CHECK_DBG
-#define SPIFFS_CHECK_DBG(_f, ...) spiffsParticleTraceLog(_f, ## __VA_ARGS__)
-#endif
-// Set spiffs debug output call for all api invocations.
-#ifndef SPIFFS_API_DBG
-#define SPIFFS_API_DBG(_f, ...) spiffsParticleTraceLog(_f, ## __VA_ARGS__)
+#ifndef EOF
+#define	EOF	(-1)
 #endif
 
 
@@ -106,12 +112,38 @@ void spiffsParticleUnlock();
 #define _SPIPRIfl  "%02x"
 #endif
 
+// compile time switches
+
+
+// Set generic spiffs debug output call.
+#ifndef SPIFFS_DBG
+#define SPIFFS_DBG(_f, ...) printf(_f, ## __VA_ARGS__) 
+#endif
+// Set spiffs debug output call for garbage collecting.
+#ifndef SPIFFS_GC_DBG
+#define SPIFFS_GC_DBG(_f, ...) printf(_f, ## __VA_ARGS__) 
+#endif
+// Set spiffs debug output call for caching.
+#ifndef SPIFFS_CACHE_DBG
+#define SPIFFS_CACHE_DBG(_f, ...) printf(_f, ## __VA_ARGS__) 
+#endif
+// Set spiffs debug output call for system consistency checks.
+#ifndef SPIFFS_CHECK_DBG
+#define SPIFFS_CHECK_DBG(_f, ...) printf(_f, ## __VA_ARGS__) 
+#endif
+// Set spiffs debug output call for all api invocations.
+#ifndef SPIFFS_API_DBG
+#define SPIFFS_API_DBG(_f, ...) printf(_f, ## __VA_ARGS__) 
+#endif
+
+
+
 
 // Enable/disable API functions to determine exact number of bytes
 // for filedescriptor and cache buffers. Once decided for a configuration,
 // this can be disabled to reduce flash.
 #ifndef SPIFFS_BUFFER_HELP
-#define SPIFFS_BUFFER_HELP              0
+#define SPIFFS_BUFFER_HELP              1
 #endif
 
 // Enables/disable memory read caching of nucleus file system operations.
@@ -221,11 +253,11 @@ void spiffsParticleUnlock();
 
 // define this to enter a mutex if you're running on a multithreaded system
 #ifndef SPIFFS_LOCK
-#define SPIFFS_LOCK(fs) spiffsParticleLock()
+#define SPIFFS_LOCK(fs)
 #endif
 // define this to exit a mutex if you're running on a multithreaded system
 #ifndef SPIFFS_UNLOCK
-#define SPIFFS_UNLOCK(fs) spiffsParticleUnlock()
+#define SPIFFS_UNLOCK(fs)
 #endif
 
 // Enable if only one spiffs instance with constant configuration will exist
@@ -257,7 +289,7 @@ void spiffsParticleUnlock();
 
 // Enable this if your target needs aligned data for index tables
 #ifndef SPIFFS_ALIGNED_OBJECT_INDEX_TABLES
-#define SPIFFS_ALIGNED_OBJECT_INDEX_TABLES       0
+#define SPIFFS_ALIGNED_OBJECT_INDEX_TABLES       1
 #endif
 
 // Enable this if you want the HAL callbacks to be called with the spiffs struct
@@ -375,6 +407,10 @@ void spiffsParticleUnlock();
 #endif
 #endif
 
+#ifndef SPIFFS_SECURE_ERASE
+#define SPIFFS_SECURE_ERASE 0
+#endif
+
 // Types depending on configuration such as the amount of flash bytes
 // given to spiffs file system in total (spiffs_file_system_size),
 // the logical block size (log_block_size), and the logical page size
@@ -382,17 +418,17 @@ void spiffsParticleUnlock();
 
 // Block index type. Make sure the size of this type can hold
 // the highest number of all blocks - i.e. spiffs_file_system_size / log_block_size
-typedef u16_t spiffs_block_ix;
+typedef u32_t spiffs_block_ix;
 // Page index type. Make sure the size of this type can hold
 // the highest page number of all pages - i.e. spiffs_file_system_size / log_page_size
-typedef u16_t spiffs_page_ix;
+typedef u32_t spiffs_page_ix;
 // Object id type - most significant bit is reserved for index flag. Make sure the
 // size of this type can hold the highest object id on a full system,
 // i.e. 2 + (spiffs_file_system_size / (2*log_page_size))*2
-typedef u16_t spiffs_obj_id;
+typedef u32_t spiffs_obj_id;
 // Object span index type. Make sure the size of this type can
 // hold the largest possible span index on the system -
-// i.e. (spiffs_file_system_size / log_page_size) - 1
-typedef u16_t spiffs_span_ix;
+// i.e. (spiffs_file_system_size / log_page_size) - 1SS
+typedef u32_t spiffs_span_ix;
 
 #endif /* SPIFFS_CONFIG_H_ */
