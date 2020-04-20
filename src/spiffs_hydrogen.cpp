@@ -52,6 +52,7 @@ s32_t SPIFFS_format(spiffs *fs) {
     }
     SPIFFS_API_CHECK_RES_UNLOCK(fs, res);
     bix++;
+    delay(1);
   }
 
   SPIFFS_UNLOCK(fs);

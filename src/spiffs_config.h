@@ -12,6 +12,7 @@
 // Following includes are for the linux test build of spiffs
 // These may/should/must be removed/altered/replaced in your target
 
+#include <Arduino.h>
 #include <LibPrintf.h>
 //#include <HardwareSerial.h>
 #include <string.h>
